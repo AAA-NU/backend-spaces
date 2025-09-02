@@ -41,6 +41,8 @@ func New(
 		c.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
+	Register(group, service)
+
 	return &Server{
 		server: httpServer,
 		engine: engine,
