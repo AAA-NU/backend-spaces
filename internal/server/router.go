@@ -40,8 +40,14 @@ func (r *Router) GetRooms(ctx *gin.Context) {
 
 func (r *Router) GetCoworking(ctx *gin.Context) {
 	coworkingID := ctx.Param("id")
+	date := ctx.Query("date")
 
-	coworking, err := r.service.Coworking(ctx, coworkingID)
+	if date == "" {
+		ctx.JSON(400, gin.H{"status": "error", "message": "query param \"date\" is required"})
+		return
+	}
+
+	coworking, err := r.service.Coworking(ctx, coworkingID, date)
 	if err != nil {
 		HandleError(ctx, err)
 		return
@@ -102,5 +108,5 @@ func (r *Router) init() {
 
 	coworkingsGroup.GET("/:id", r.GetCoworking)
 	coworkingsGroup.GET("/", r.GetCoworkings)
-	coworkingsGroup.POST("/", r.AddCoworkingBookedTime)
+	coworkingsGroup.POST("/:id", r.AddCoworkingBookedTime)
 }

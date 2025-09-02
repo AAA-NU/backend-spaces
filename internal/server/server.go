@@ -8,13 +8,14 @@ import (
 
 	"github.com/aaanu/backend-spaces/internal/config"
 	"github.com/aaanu/backend-spaces/internal/domain/models"
+	"github.com/aaanu/backend-spaces/internal/domain/responses"
 	"github.com/gin-gonic/gin"
 )
 
 type SpacesService interface {
 	Room(ctx context.Context, id string) (*models.RoomModel, error)
 	Rooms(ctx context.Context) ([]models.RoomModel, error)
-	Coworking(ctx context.Context, id string) (*models.CoworkingModel, error)
+	Coworking(ctx context.Context, id string, date string) (*responses.CoworkingMetaResponse, error)
 	Coworkings(ctx context.Context) ([]models.CoworkingModel, error)
 	UpdateRoomBooking(ctx context.Context, room *models.RoomModel) error
 	AddCoworkingBookedTime(ctx context.Context, coworkingID string, newTime string) error
