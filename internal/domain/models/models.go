@@ -4,7 +4,7 @@ import "github.com/lib/pq"
 
 type CoworkingModel struct {
 	ID         string         `json:"id"`
-	BookedTime pq.StringArray `gorm:"type:text[]"`
+	BookedTime pq.StringArray `gorm:"type:text[]" json:"booked_time"`
 }
 
 type RoomModel struct {
