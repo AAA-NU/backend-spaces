@@ -43,7 +43,7 @@ func (s *Storage) Coworkings(ctx context.Context) ([]models.CoworkingModel, erro
 }
 
 func (s *Storage) UpdateRoomBooking(ctx context.Context, room *models.RoomModel) error {
-	return s.db.WithContext(ctx).Model(&models.RoomModel{}).Save(room).Error
+	return s.db.WithContext(ctx).Model(&models.RoomModel{}).Where("id = ?", room.ID).Save(room).Error
 }
 
 func (s *Storage) AddCoworkingBookedTime(ctx context.Context, coworkingID string, newTime string) error {
