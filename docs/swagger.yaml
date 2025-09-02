@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: Spaces API
+  version: 1.0.0
+  description: API для управления бронированием комнат и коворкингов
+
+servers:
+  - url: /api
+
+paths:
+  /ping:
+    get:
+      summary: Проверка доступности сервера
+      responses:
+        '200':
+          description: Сервер доступен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /rooms/:
+    get:
+      summary: Получить список всех комнат
+      responses:
+        '200':
+          description: Список комнат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomModel'
+    put:
+      summary: Обновить бронирование комнаты
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomModel'
+      responses:
+        '200':
+          description: Комната обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomModel'
+        '400':
+          description: Некорректные данные
+
+  /rooms/{id}:
+    get:
+      summary: Получить информацию о комнате по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Информация о комнате
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomModel'
+        '404':
+          description: Комната не найдена
+
+  /coworkings/:
+    get:
+      summary: Получить список всех коворкингов
+      responses:
+        '200':
+          description: Список коворкингов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoworkingModel'
+
+  /coworkings/{id}:
+    get:
+      summary: Получить доступное время для коворкинга по дате
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Доступное время
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoworkingMetaResponse'
+        '400':
+          description: Не указана дата или некорректная дата
+        '404':
+          description: Коворкинг не найден
+
+    post:
+      summary: Добавить новое забронированное время для коворкинга
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddBookingTime'
+      responses:
+        '200':
+          description: Время успешно добавлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddBookingTime'
+        '400':
+          description: Некорректные данные
+        '409':
+          description: Время уже забронировано
+
+components:
+  schemas:
+    RoomModel:
+      type: object
+      properties:
+        id:
+          type: string
+        is_booked:
+          type: boolean
+        booked_by:
+          type: string
+
+    CoworkingModel:
+      type: object
+      properties:
+        id:
+          type: string
+        booked_time:
+          type: array
+          items:
+            type: string
+
+    CoworkingMetaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        available_times:
+          type: array
+          items:
+            type: string
+
+    AddBookingTime:
+      type: object
+      properties:
+        time:
+          type: string
